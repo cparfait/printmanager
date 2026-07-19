@@ -12,7 +12,7 @@ PrintManager est une application web PHP permettant de gérer l'ensemble du parc
 - **Parc imprimantes** — Inventaire complet des imprimantes avec numéro de série, adresse IP, localisation, service affecté, dates d'achat et de garantie, association aux modèles de cartouches compatibles
 - **Gestion du stock** — Suivi des quantités disponibles et réservées par modèle de cartouche, avec alertes automatiques en cas de stock bas
 - **Entrées de stock** — Enregistrement des réceptions avec fournisseur, quantité, prix unitaire et référence de facture
-- **Sorties de stock** — Enregistrement des distributions de cartouches par service, imprimante et personne
+- **Sorties de stock** — Enregistrement des distributions de cartouches par service, imprimante et personne, avec export CSV compatible Excel (filtrable par service et période)
 - **Commandes fournisseurs** — Création et suivi des bons de commande avec lignes détaillées, statut (en attente, partielle, reçue, annulée) et réception progressive
 - **Demandes / Réservations** — Les services peuvent demander des cartouches, avec suivi du statut (en attente, partielle, honorée, annulée)
 - **Référentiels** — Gestion des services/directions, fournisseurs et modèles d'imprimantes
@@ -20,6 +20,8 @@ PrintManager est une application web PHP permettant de gérer l'ensemble du parc
 - **Journal d'activité** — Traçabilité complète de toutes les actions utilisateurs
 - **Gestion des utilisateurs** — Authentification sécurisée avec rôles (admin / utilisateur)
 - **Annulation des mouvements** — Les administrateurs peuvent annuler une entrée ou une sortie de stock erronée (le stock et les demandes liées sont recalculés)
+- **Recherche** — Recherche globale depuis le tableau de bord (imprimantes, cartouches, mouvements) et recherche sur l'ensemble des listes paginées (Entrée = recherche côté serveur)
+- **Scanner QR / code-barres** — Identification rapide d'une cartouche à la caméra lors des entrées/sorties de stock
 - **Thème clair / sombre** — Interface moderne avec basculement de thème
 
 ## Rôles
@@ -97,6 +99,17 @@ cartouches/
 - Actions métier exécutées dans une **transaction** (tout ou rien)
 - Export CSV protégé contre l'injection de formule Excel
 - Erreurs consignées dans le log serveur, jamais affichées en production
+
+## Historique des versions
+
+### v1.1
+- **Sécurité** : protection CSRF généralisée, contrôle des rôles côté serveur, mots de passe 12 caractères minimum, anti-brute-force, sessions durcies, erreurs journalisées
+- **Fiabilité** : installation corrigée (schéma complet, admin créé avant les index), transactions sur toutes les actions, annulation des mouvements de stock, garde-fous sur les suppressions (traçabilité), réceptions plafonnées aux quantités commandées
+- **Autonomie** : plus aucune dépendance externe (polices système, Chart.js et jsQR auto-hébergés) — fonctionne en intranet sans internet, conforme RGPD
+- **Architecture** : code réorganisé en modules (`inc/`, `inc/pages/`, `assets/app.css`), recherche côté serveur, optimisation des requêtes
+
+### v1.0
+- Version initiale
 
 ## Licence
 
