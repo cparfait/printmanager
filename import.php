@@ -3,14 +3,15 @@
 //  seed_data.php — Données de test riches pour PrintManager
 //  ⚠️  À SUPPRIMER EN PRODUCTION
 // ============================================================
-session_start();
 require_once 'config.php';
+secureSessionStart();
 
 if (empty($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
     die('<p style="font-family:sans-serif;color:red;padding:2rem">Accès refusé.</p>');
 }
 
-if (!isset($_GET['confirm'])) { ?>
+// Confirmation exigée en POST + jeton CSRF (jamais d'action destructrice en GET)
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !csrfCheck($_POST['csrf'] ?? '')) { ?>
 <!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Seed data</title>
 <style>
 body{font-family:'Segoe UI',sans-serif;max-width:640px;margin:4rem auto;padding:2rem;background:#f0f2f7}
@@ -38,7 +39,10 @@ ul{color:#4a5568;font-size:.9rem;line-height:2;margin-bottom:1.5rem;padding-left
   <li>12 demandes de cartouches</li>
 </ul>
 <div class="row">
-  <a href="?confirm=1" class="btn">🚨 Confirmer et injecter</a>
+  <form method="post" style="display:inline">
+    <?=csrfField()?>
+    <button type="submit" class="btn" style="border:none;cursor:pointer;font-size:1rem">🚨 Confirmer et injecter</button>
+  </form>
   <a href="index.php" class="cancel">Annuler</a>
 </div>
 </div></body></html>

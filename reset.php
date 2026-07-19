@@ -3,8 +3,8 @@
 //  reset_data.php — Vidage complet de la base (HORS utilisateurs)
 //  ⚠️  À SUPPRIMER EN PRODUCTION
 // ============================================================
-session_start();
 require_once 'config.php'; // charge getDB(), isLogged(), etc. sans tout index.php
+secureSessionStart();
 
 if (empty($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
     die('<p style="font-family:sans-serif;color:red;padding:2rem">Accès refusé. Connectez-vous en administrateur.</p>');
@@ -42,7 +42,7 @@ foreach ($tables as $t => $label) {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['confirm'] ?? '') === 'VIDER') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['confirm'] ?? '') === 'VIDER' && csrfCheck($_POST['csrf'] ?? '')) {
     try {
         // Désactiver FK pour éviter tout blocage
         $db->exec("SET FOREIGN_KEY_CHECKS=0");
@@ -133,6 +133,7 @@ code{font-size:.78rem;background:#edf2f7;padding:.1rem .4rem;border-radius:4px}
   </table>
 
   <form method="post">
+    <?=csrfField()?>
     <label style="font-size:.85rem;color:#4a5568;font-weight:600">
       Tapez <strong>VIDER</strong> pour confirmer la suppression :
     </label>
